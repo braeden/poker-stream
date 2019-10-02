@@ -1,0 +1,15 @@
+{
+    "1": {
+        "cards": ["AD", "TD"]
+    },
+    "2": {
+        "cards": ["Ad", "Th"]
+    },
+    "3": {
+        "cards": ["Ad", "Th"],
+        "dealer": true
+    },
+    "4": {
+        "cards": ["Ad", "Th"]
+    }
+}

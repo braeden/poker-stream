@@ -1,11 +1,17 @@
 const app = require('express')();
-var http = require('http')
-http.globalAgent.maxSockets = 50;
+const http = require('http')
+const express = require('express');
+const bodyParser = require('body-parser');
+
 const svr = http.createServer(app)
 const io = require('socket.io')(svr);
-const express = require('express');
-app.use(express.static('public'))
 
+http.globalAgent.maxSockets = 50;
+
+app.use(express.static('public'))
+app.use(bodyParser.json());
+
+let currentTable = {}
 
 svr.listen(process.env.PORT, function () {
     console.log(`listening on *:${process.env.PORT}`);
@@ -13,17 +19,43 @@ svr.listen(process.env.PORT, function () {
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
+    res.sendFile('index.html')
 });
 
 app.post('/api', function (req, res) {
     // Verify here
-    io.emit('cardsUpdate', req.body)
+    if (req && req.body && req.body.auth) {
+        let oldTable = JSON.stringify(currentTable)
+        let position = Object.keys(req.body).filter(k => k != "auth")[0]
+        if (req.body[position] == "button" && currentTable.dealer != position) {
+            currentTable = {
+                [position]: {
+                    "dealer": true,
+                    "cards": []
+                }
+            }
+        } else if (!currentTable[position]) {
+            currentTable = {
+                ...currentTable,
+                [position]: {
+                    "cards": [req.body[position]]
+                }
+            }
+        } else if (currentTable[position].cards.length < 2) {
+            currentTable[position].cards.push(req.body[position])
+            currentTable[position].cards = [...new Set(currentTable[position].cards)]
+        }
+        if (JSON.stringify(currentTable) != oldTable) {
+            io.emit('cardsUpdate', currentTable)
+        }
+
+        res.json({})
+    }
 })
 
 io.on('connection', function (socket) {
     console.log(`[${io.engine.clientsCount}] a user connected: ${socket.id}`);
-    
+
     socket.on('disconnect', () => {
         console.log(`[${io.engine.clientsCount}] a user disconnected: ${socket.id}`);
     });
