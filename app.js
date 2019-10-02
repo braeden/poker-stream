@@ -55,6 +55,7 @@ app.post('/api', function (req, res) {
 
 io.on('connection', function (socket) {
     console.log(`[${io.engine.clientsCount}] a user connected: ${socket.id}`);
+    io.emit('cardsUpdate', currentTable)
 
     socket.on('disconnect', () => {
         console.log(`[${io.engine.clientsCount}] a user disconnected: ${socket.id}`);

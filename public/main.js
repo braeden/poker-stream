@@ -1,36 +1,36 @@
 const socket = io();
 const canvas = document.getElementById('viewport');
-const xycardpositions = [[1000,100],[1400,150],[1780,400],[1780,800],[1200,800],[800,800],[400,800],[150,400],[400,100]]
+const cardCoordinates = [
+    [1000, 100],
+    [1400, 150],
+    [1780, 400],
+    [1780, 800],
+    [1200, 800],
+    [800, 800],
+    [400, 800],
+    [150, 400],
+    [400, 100]
+]
 const ctx = canvas.getContext('2d');
-const dir = "img/";
-const fileextension = ".svg";
-const imagesize = 80;
+const imageSize = 80;
 
-socket.on('cardsUpdate', function (input) {
-    console.log(input)
-    // let dir = "img/"
-    // let testImg = new Image;
-    // testImg.src = dir+"QD";
-    // let canvas = document.getElementById("viewport");
-    // let ctx = canvas.getContext("2d");
-    // ctx.drawImage(testImg, 10,10,84,120);
+socket.on('cardsUpdate', function (table) {
+    console.log(table)
 
-    for(let player in playerInfo){
-        let tempPlayer = playerInfo[player];
-        let cardOne = new Image;
-        let cardTwo = new Image;
-        let tempX = xycardpositions[parseInt(player)-1][0]
-        let tempY = xycardpositions[parseInt(player)-1][1]
-        
-        if(tempPlayer.cards && tempPlayer.cards.length > 0){
-        cardOne.src = dir+tempPlayer.cards[0]+fileextension;
-        console.log(dir+tempPlayer.cards[0]+fileextension);
-        ctx.drawImage(cardOne,tempX,tempY,imageSize*.7,imageSize);
-        }
-        if(tempPlayer.cards && tempPlayer.cards.length > 1){
-        cardTwo.src = dir+tempPlayer.cards[1]+fileextension;
-        ctx.drawImage(cardTwo,tempX+imageSize*.7,tempY,imageSize*.7,imageSize);
+    for (let position in table) {
+        let player = table[position];
+        let cardImages = [new Image, new Image]
+        let tempX = cardCoordinates[parseInt(position) - 1][0]
+        let tempY = cardCoordinates[parseInt(position) - 1][1]
+        let fileLoc = (n) => `img/${n}.svg`
+        if (player.cards) {
+            player.cards[1] = player.cards[1] || null
+            player.cards.forEach((card, i) => {
+                cardImages[i].src = card ? fileLoc(card) : fileLoc('BACK')
+                cardImages[i].onload = () => {
+                    ctx.drawImage(cardImages[i], tempX + i * (imageSize * .7), tempY, imageSize * .7, imageSize);
+                }
+            })
         }
     }
 })
-
