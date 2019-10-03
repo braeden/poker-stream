@@ -14,6 +14,10 @@ const cardCoordinates = [
 const ctx = canvas.getContext('2d');
 const imageSize = 80;
 
+
+console.log();
+
+
 socket.on('cardsUpdate', function (table) {
     console.log(table)
     ctx.clearRect(0, 0, canvas.width, canvas.height);

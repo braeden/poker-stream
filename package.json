@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "deploy-local": "heroku local web"
+    "start": "heroku local web"
   },
   "author": "",
   "license": "ISC",
@@ -12,7 +12,6 @@
     "body-parser": "^1.19.0",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.0",
     "socket.io": "^2.3.0"
   }
 }

@@ -1,0 +1,16 @@
+{
+  "name": "serialreader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serial.js",
+  "scripts": {
+    "start": "node serial.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "node-fetch": "^2.6.0",
+    "serialport": "^7.1.5"
+  }
+}
