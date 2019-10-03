@@ -2,7 +2,7 @@ const app = require('express')();
 const http = require('http')
 const express = require('express');
 const bodyParser = require('body-parser');
-
+require('dotenv').config()
 const svr = http.createServer(app)
 const io = require('socket.io')(svr);
 
@@ -23,11 +23,10 @@ app.get('/', (req, res) => {
 });
 
 app.post('/api', function (req, res) {
-    // Verify here
-    if (req && req.body && req.body.auth) {
+    if (req && req.body && req.body.auth && req.body.auth == process.env.AUTH_KEY) {
         let oldTable = JSON.stringify(currentTable)
         let position = Object.keys(req.body).filter(k => k != "auth")[0]
-        if (req.body[position] == "button" && currentTable.dealer != position) {
+        if (req.body[position] == "button" && !currentTable[position].dealer) {
             currentTable = {
                 [position]: {
                     "dealer": true,
@@ -42,15 +41,17 @@ app.post('/api', function (req, res) {
                 }
             }
         } else if (currentTable[position].cards.length < 2) {
-            currentTable[position].cards.push(req.body[position])
-            currentTable[position].cards = [...new Set(currentTable[position].cards)]
+            if (!currentTable[position].cards.includes(req.body[position])) {
+                currentTable[position].cards.push(req.body[position])
+            }
         }
         if (JSON.stringify(currentTable) != oldTable) {
             io.emit('cardsUpdate', currentTable)
         }
-
-        res.json({})
+    } else {
+        console.log("Invalid request")
     }
+    res.json({})
 })
 
 io.on('connection', function (socket) {

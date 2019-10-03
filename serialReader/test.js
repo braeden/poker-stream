@@ -4,7 +4,7 @@ const fs = require('fs');
 (async() => {
     const url = 'http://localhost:5000/api'
     // "https://poker-stream.herokuapp.com/api"
-    let cardData = JSON.parse(fs.readFileSync('sample/fromTable.json'));
+    let cardData = JSON.parse(fs.readFileSync('../sample/fromTable.json'));
     console.log(cardData)
     await postData(url, cardData)
 })();
