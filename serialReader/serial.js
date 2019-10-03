@@ -5,7 +5,7 @@ const fs = require('fs');
 const lookup = JSON.parse(fs.readFileSync('card-lookup.json'));
 const url = 'http://localhost:5000/api'
 require('dotenv').config({
-    path: '..'
+    path: '../.env'
 })
 let port, parser
 
