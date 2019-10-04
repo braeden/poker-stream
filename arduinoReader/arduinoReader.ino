@@ -34,13 +34,19 @@
 // PIN Numbers : RESET + SDAs
 #define RST_PIN 9
 #define SS_1_PIN 10
-#define SS_2_PIN 8
+#define A_1_PIN A0
+
+#define SS_2_PIN 2
 #define SS_3_PIN 7
 #define SS_4_PIN 6
 
-#define NR_OF_READERS 1
+// Led and Relay PINS
+#define GreenLed 2
+#define RedLed 4
 
-byte ssPins[] = {SS_1_PIN}; //, SS_2_PIN, SS_3_PIN, SS_4_PIN};
+#define NR_OF_READERS 2
+
+byte ssPins[] = {SS_1_PIN, A_1_PIN}; //SS_2_PIN}; //, , SS_3_PIN, SS_4_PIN};
 
 // Create an MFRC522 instance :
 MFRC522 mfrc522[NR_OF_READERS];
@@ -50,12 +56,21 @@ MFRC522 mfrc522[NR_OF_READERS];
 */
 void setup()
 {
+  pinMode(A0, OUTPUT);
+
 
   Serial.begin(9600); // Initialize serial communications with the PC
   while (!Serial)
     ; // Do nothing if no serial port is opened (added for Arduinos based on ATMEGA32U4)
 
   SPI.begin(); // Init SPI bus
+
+  /* Initializing Inputs and Outputs */
+  pinMode(GreenLed, OUTPUT);
+  digitalWrite(GreenLed, LOW);
+  pinMode(RedLed, OUTPUT);
+  digitalWrite(RedLed, LOW);
+
   /* looking for MFRC522 readers */
   for (uint8_t reader = 0; reader < NR_OF_READERS; reader++)
   {
@@ -67,6 +82,10 @@ void setup()
     //mfrc522[reader].PCD_SetAntennaGain(mfrc522[reader].RxGain_max);
   }
 }
+
+/*
+   Main loop.
+*/
 
 void loop()
 {

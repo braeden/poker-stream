@@ -28,11 +28,11 @@ parser.on('data', async (text) => {
         let [position, cardUID] = text.split('|')
         position = parseInt(position) + 1
         if (lookup[cardUID]) {
+            console.log("Sent JSON:", {[position]: lookup[cardUID]})
             cardData = {
                 auth: process.env.AUTH_KEY,
                 [position]: lookup[cardUID]
             }
-            console.log("Sent JSON:", cardData)
             await postData(url, cardData)
         } else {
             console.log("Card does not exist");
