@@ -26,23 +26,26 @@ app.post('/api', function (req, res) {
     if (req && req.body && req.body.auth && req.body.auth == process.env.AUTH_KEY) {
         let oldTable = JSON.stringify(currentTable)
         let position = Object.keys(req.body).filter(k => k != "auth")[0]
-        if (req.body[position] == "button" && !currentTable[position].dealer) {
-            currentTable = {
-                [position]: {
-                    "dealer": true,
-                    "cards": []
+        let value = req.body[position]
+        if (value == "button") {
+            if (!currentTable[position] || !currentTable[position].dealer) {
+                currentTable = {
+                    [position]: {
+                        "dealer": true,
+                        "cards": []
+                    }
                 }
             }
         } else if (!currentTable[position]) {
             currentTable = {
                 ...currentTable,
                 [position]: {
-                    "cards": [req.body[position]]
+                    "cards": [value]
                 }
             }
         } else if (currentTable[position].cards.length < 2) {
-            if (!currentTable[position].cards.includes(req.body[position])) {
-                currentTable[position].cards.push(req.body[position])
+            if (!currentTable[position].cards.includes(value)) {
+                currentTable[position].cards.push(value)
             }
         }
         if (JSON.stringify(currentTable) != oldTable) {
